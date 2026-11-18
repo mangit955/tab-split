@@ -1,0 +1,17 @@
+{
+  "name": "tab-split",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.2.4",
+    "vitest": "4.0.14"
+  }
+}
