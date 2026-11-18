@@ -1,5 +1,5 @@
 import "./style.css";
-import { computeTab, formatCents, parseBill } from "./tip";
+import { computePerPerson, computeTab, formatCents, parseBill } from "./tip";
 
 const TIP_CHOICES = [10, 15, 18, 20] as const;
 
@@ -29,9 +29,19 @@ app.innerHTML = `
       </div>
     </fieldset>
 
+    <div class="field people-field">
+      <span id="people-label">People</span>
+      <div class="stepper" role="group" aria-labelledby="people-label">
+        <button type="button" class="step" id="people-decrease" aria-label="Fewer people">−</button>
+        <output id="people-count" aria-live="polite">1</output>
+        <button type="button" class="step" id="people-increase" aria-label="More people">+</button>
+      </div>
+    </div>
+
     <dl class="summary">
       <div><dt>Tip</dt><dd id="tip-amount">$0.00</dd></div>
       <div class="total"><dt>Total</dt><dd id="total-amount">$0.00</dd></div>
+      <div><dt>Each person</dt><dd id="per-person-amount">$0.00</dd></div>
     </dl>
   </section>
 `;
@@ -40,12 +50,26 @@ const bill = app.querySelector<HTMLInputElement>("#bill");
 const billError = app.querySelector<HTMLElement>("#bill-error");
 const tipAmount = app.querySelector<HTMLElement>("#tip-amount");
 const totalAmount = app.querySelector<HTMLElement>("#total-amount");
+const perPersonAmount = app.querySelector<HTMLElement>("#per-person-amount");
+const peopleCount = app.querySelector<HTMLOutputElement>("#people-count");
+const decreasePeople = app.querySelector<HTMLButtonElement>("#people-decrease");
+const increasePeople = app.querySelector<HTMLButtonElement>("#people-increase");
 const tipButtons = [...app.querySelectorAll<HTMLButtonElement>(".tip")];
-if (bill === null || billError === null || tipAmount === null || totalAmount === null) {
+if (
+  bill === null ||
+  billError === null ||
+  tipAmount === null ||
+  totalAmount === null ||
+  perPersonAmount === null ||
+  peopleCount === null ||
+  decreasePeople === null ||
+  increasePeople === null
+) {
   throw new Error("the page is missing one of its fields");
 }
 
 let tipPercent: number = 18;
+let people = 1;
 
 function render(): void {
   for (const button of tipButtons) {
@@ -55,8 +79,12 @@ function render(): void {
   const cents = parseBill(typed);
   if (billError !== null) billError.hidden = typed.trim() === "" || cents !== null;
   const tab = computeTab(cents ?? 0, tipPercent);
-  if (tipAmount !== null) tipAmount.textContent = formatCents(tab.tipCents);
-  if (totalAmount !== null) totalAmount.textContent = formatCents(tab.totalCents);
+  tipAmount!.textContent = formatCents(tab.tipCents);
+  totalAmount!.textContent = formatCents(tab.totalCents);
+  perPersonAmount!.textContent = formatCents(computePerPerson(tab.totalCents, people));
+  peopleCount!.value = String(people);
+  decreasePeople!.disabled = people === 1;
+  increasePeople!.disabled = people === 20;
 }
 
 bill.addEventListener("input", render);
@@ -66,4 +94,12 @@ for (const button of tipButtons) {
     render();
   });
 }
+decreasePeople.addEventListener("click", () => {
+  people = Math.max(1, people - 1);
+  render();
+});
+increasePeople.addEventListener("click", () => {
+  people = Math.min(20, people + 1);
+  render();
+});
 render();

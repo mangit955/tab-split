@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeTab, formatCents, parseBill } from "./tip";
+import { computePerPerson, computeTab, formatCents, parseBill } from "./tip";
 
 describe("parseBill", () => {
   it("reads dollars and cents, with or without a dollar sign", () => {
@@ -30,5 +30,15 @@ describe("formatCents", () => {
   it("prints two decimal places", () => {
     expect(formatCents(14400)).toBe("$144.00");
     expect(formatCents(5)).toBe("$0.05");
+  });
+});
+
+describe("computePerPerson", () => {
+  it("splits the total evenly", () => {
+    expect(computePerPerson(12000, 3)).toBe(4000);
+  });
+
+  it("rounds each share up to a cent", () => {
+    expect(computePerPerson(1001, 3)).toBe(334);
   });
 });

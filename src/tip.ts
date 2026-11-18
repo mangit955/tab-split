@@ -17,6 +17,11 @@ export function computeTab(billCents: number, tipPercent: number): Tab {
   return { tipCents, totalCents: billCents + tipCents };
 }
 
+/** The amount each person pays, rounded up so the group always covers the total. */
+export function computePerPerson(totalCents: number, people: number): number {
+  return Math.ceil(totalCents / people);
+}
+
 /** Cents as dollars, the way a receipt prints them. */
 export function formatCents(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
