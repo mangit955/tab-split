@@ -110,6 +110,37 @@ button:focus-visible {
   color: var(--accent-ink);
 }
 
+.stepper {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.step {
+  height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.step:disabled {
+  color: var(--line);
+  cursor: not-allowed;
+}
+
+.stepper output {
+  text-align: center;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
 .summary {
   margin: 0;
   display: grid;
